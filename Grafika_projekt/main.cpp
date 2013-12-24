@@ -138,11 +138,9 @@ class snowMan{
         void draw(){
             for(unsigned i = 0; i<n; i++){
                 if(snowmans[i][3] == true){
-                    snowmans[i][0] += speed*lx*direction;
-                    snowmans[i][1] += speed*ly*direction;sf
                     glPushMatrix();
-                    glRotatef(snowmans[i][4], 0,0,1);
-                    glTranslatef(snowmans[i][0], snowmans[i][1], snowmans[i][2]);
+                       glTranslatef(snowmans[i][0], snowmans[i][1], snowmans[i][2]);
+                       glRotatef(snowmans[i][4], 0,0,1);
                         glColor3f(0.9, 0.9, 0.9);
                         glPushMatrix();
                             glPushMatrix();
@@ -224,13 +222,13 @@ class bulet{
       void setVector(float x, float y, float z){ vx1 = x; vy1 = y; vz1 = z; };
 
       void drawBulet(){
-          if(draw() == true){
+       //   if(draw() == true){
               glPushMatrix();
               glColor3d(1,1,1);
                 glTranslatef(x(), y(), z());
                 glutSolidSphere(0.1, 6, 6);
               glPopMatrix();
-          }
+       //   }
       }
 
       void setPosition(float x, float y, float z){
@@ -243,12 +241,9 @@ class bulet{
 
       bool calculateColision(){
           for(unsigned int i = 0; i < snow.number(); ++i){
-              if(sqrt(pow(x()-snow(i,0),2)+pow(y()-snow(i,1),2)+pow(z()-snow(i,2),2)) < 1){
-//                snowmans[i][3] = false;
-                  snow.set(i,3,false);
-                //  draw() = false;
+              if(sqrt(pow(x()-snow(i,0),2)+pow(y()-snow(i,1),2)+pow(z()-snow(i,2),2)) < 1.1){
+                  snow(i,3) = false;
                   return true;
-                 // break;
               }
           }
           return false;
@@ -258,23 +253,20 @@ class bulet{
 bulet bul(cam.x(), cam.y(), cam.z(), false);
 
 void drawBulet1(int value){
-    if(bul.draw() == true){
+  //  if(bul.draw() == true){
         float i = 0;
-        i += 0.1;
+        i += 1;
         bul.x() += bul.vx()*i;
         bul.y() += bul.vy()*i;
         bul.z() += bul.vz()*i;
-/*        bul.calculateColision();*/
         if(bul.calculateColision()){
-         //  bul.draw() = false;
-         //   cout<<"asdfasdf"<<endl;
+
         }
-     //   cout<<snow.get(2,1)<<endl;
         if(i > 1000){
             bul.draw() = false;
             i = 0;
         }
-    }
+ //   }
     glutPostRedisplay();
     glutTimerFunc(10, drawBulet1, 0);
 }
@@ -552,9 +544,9 @@ static void display(void) {
         }*/
    // }
 
-    glPushMatrix();
+ //   glPushMatrix();
       snow.draw();
-    glPopMatrix();
+ //   glPopMatrix();
 
     glPushMatrix();
       glTranslatef(0,0,10);
@@ -717,7 +709,7 @@ int main(int argc, char *argv[]){
     glutDisplayFunc(display);
 
     glutIdleFunc(idle);
-    glutTimerFunc(1000, drawBulet1, 0);
+    glutTimerFunc(100, drawBulet1, 0);
     glClearColor(0.1,0.1,0.2,0.5);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutIgnoreKeyRepeat(1);
