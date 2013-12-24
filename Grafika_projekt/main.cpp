@@ -92,13 +92,13 @@ class camera{
             }
         }
         void updatePositionKeyS(float speed){
-          if(ghostMode() == true){
-              x() = x() + (speed*2)*strefeX*keyMoveS();
-              y() = y() + (speed*2)*strefeY*keyMoveS();
-          } else {
-              x() = x() + speed*strefeX*keyMoveS();
-              y() = y() + speed*strefeY*keyMoveS();
-          }
+            if(ghostMode() == true){
+                x() = x() + (speed*2)*strefeX*keyMoveS();
+                y() = y() + (speed*2)*strefeY*keyMoveS();
+            } else {
+                x() = x() + speed*strefeX*keyMoveS();
+                y() = y() + speed*strefeY*keyMoveS();
+            }
         }
 
         void rotateYaw(float angle){
@@ -137,7 +137,12 @@ class snowMan{
 
         void draw(){
             for(unsigned i = 0; i<n; i++){
+
+                snowmans[i][0] = snowmans[i][0]+sin(snowmans[i][0]) * -sin(snowmans[i][4])*-0.000001;
+                snowmans[i][1] = snowmans[i][1]+cos(snowmans[i][1]) * cos(snowmans[i][4])*0.000001;
+
                 if(snowmans[i][3] == true){
+
                     glPushMatrix();
                        glTranslatef(snowmans[i][0], snowmans[i][1], snowmans[i][2]);
                        glRotatef(snowmans[i][4], 0,0,1);
@@ -178,7 +183,6 @@ class snowMan{
                                 glColor3d(0.2,0.2,0.2);
                                 glPushMatrix();
                                     glTranslatef(0.0,0.0,0.15);
-                                //    glRotatef(90, 1,0,0);
                                     glutSolidCone(0.1,0.3, slices, stacks);
                                 glPopMatrix();
                             glPopMatrix();
@@ -190,7 +194,7 @@ class snowMan{
 
         ~snowMan(){
             for(unsigned i = 0; i<n; i++){
-                  delete [] snowmans[i];
+                delete [] snowmans[i];
             }
             delete [] snowmans;
         }
@@ -202,52 +206,52 @@ snowMan snow(50); // 50 bałwanków
 
 class bulet{
     private:
-      float x1;
-      float y1;
-      float z1;
-      float vx1;
-      float vy1;
-      float vz1;
-      bool draw1;
+        float x1;
+        float y1;
+        float z1;
+        float vx1;
+        float vy1;
+        float vz1;
+        bool draw1;
     public:
-      bulet(): x1(0), y1(0), z1(0), vx1(0), vy1(0), vz1(0), draw1(false) {}
-      bulet(float x, float y, float z, bool draw1): x1(x), y1(y), z1(z), vx1(0), vy1(0), vz1(0), draw1(draw1) {}
-      float & x() { return x1; }
-      float & y() { return y1; }
-      float & z() { return z1; }
-      float & vx() { return vx1; }
-      float & vy() { return vy1; }
-      float & vz() { return vz1; }
-      bool & draw() { return draw1; }
-      void setVector(float x, float y, float z){ vx1 = x; vy1 = y; vz1 = z; };
+        bulet(): x1(0), y1(0), z1(0), vx1(0), vy1(0), vz1(0), draw1(false) {}
+        bulet(float x, float y, float z, bool draw1): x1(x), y1(y), z1(z), vx1(0), vy1(0), vz1(0), draw1(draw1) {}
+        float & x() { return x1; }
+        float & y() { return y1; }
+        float & z() { return z1; }
+        float & vx() { return vx1; }
+        float & vy() { return vy1; }
+        float & vz() { return vz1; }
+        bool & draw() { return draw1; }
+        void setVector(float x, float y, float z){ vx1 = x; vy1 = y; vz1 = z; };
 
-      void drawBulet(){
-       //   if(draw() == true){
-              glPushMatrix();
-              glColor3d(1,1,1);
-                glTranslatef(x(), y(), z());
-                glutSolidSphere(0.1, 6, 6);
-              glPopMatrix();
-       //   }
-      }
+        void drawBulet(){
+            if(draw() == true){
+                glPushMatrix();
+                glColor3d(1,1,1);
+                  glTranslatef(x(), y(), z());
+                  glutSolidSphere(0.1, 6, 6);
+                glPopMatrix();
+            }
+        }
 
-      void setPosition(float x, float y, float z){
-          if(draw1 == true){
-            this->x() = x;
-            this->y() = y;
-            this->z() = z;
-          }
-      }
+        void setPosition(float x, float y, float z){
+            if(draw1 == true){
+              this->x() = x;
+              this->y() = y;
+              this->z() = z;
+            }
+        }
 
-      bool calculateColision(){
-          for(unsigned int i = 0; i < snow.number(); ++i){
-              if(sqrt(pow(x()-snow(i,0),2)+pow(y()-snow(i,1),2)+pow(z()-snow(i,2),2)) < 1.1){
-                  snow(i,3) = false;
-                  return true;
-              }
-          }
-          return false;
-      }
+        bool calculateColision(){
+            for(unsigned int i = 0; i < snow.number(); ++i){
+                if(sqrt(pow(x()-snow(i,0),2)+pow(y()-snow(i,1),2)+pow(z()-snow(i,2),2)) < 1){
+                    snow(i,3) = false;
+                    return true;
+                }
+            }
+            return false;
+        }
 };
 
 bulet bul(cam.x(), cam.y(), cam.z(), false);
@@ -260,18 +264,18 @@ void drawBulet1(int value){
         bul.y() += bul.vy()*i;
         bul.z() += bul.vz()*i;
         if(bul.calculateColision()){
-
+         //   bul.draw() = false;
+        //    glutPostRedisplay();
+          //  i = 0;
         }
-        if(i > 1000){
+/*        if(i > 2){
             bul.draw() = false;
             i = 0;
-        }
+        }*/
  //   }
     glutPostRedisplay();
     glutTimerFunc(10, drawBulet1, 0);
 }
-
-
 
 
 //********** Funkcja do wczytywania tekstur **************
@@ -287,7 +291,6 @@ GLUquadric *quad;
 //********************************************************
 
 
-
 void drawSpace(int a){
       glColor3d(1,1,1);
 
@@ -299,7 +302,7 @@ void drawSpace(int a){
 
       GLfloat white[] = {1.0f, 1.0f, 1.0f, 1.0f};
       GLfloat lightPos2[] = {0.0f, 0.0f, 0.0f, 1.0f};
-      glLightfv(GL_LIGHT3, GL_SPECULAR , white);
+      glLightfv(GL_LIGHT3, GL_SPECULAR , white); // refleksy na planetach
       glLightfv(GL_LIGHT3, GL_POSITION, lightPos2);
 
       GLfloat lightColorR[] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -416,45 +419,45 @@ void drawSpace(int a){
 }
 
 float pointX(float u1, float v1){
-  return (-90*pow(u1,5)+225*pow(u1,4)-270*pow(u1,3)+180*pow(u1,2)-45*u1)*cos(M_PI*v1);
+    return (-90*pow(u1,5)+225*pow(u1,4)-270*pow(u1,3)+180*pow(u1,2)-45*u1)*cos(M_PI*v1);
 }
 
 float pointY(float u1, float v1){
-  return 160*pow(u1,4)-320*pow(u1,3)+160*pow(u1,2);
+    return 160*pow(u1,4)-320*pow(u1,3)+160*pow(u1,2);
 }
 
 float pointZ(float u1, float v1){
-  return (-90*pow(u1,5)+225*pow(u1,4)-270*pow(u1,3)+180*pow(u1,2)-45*u1)*sin(M_PI*v1);
+    return (-90*pow(u1,5)+225*pow(u1,4)-270*pow(u1,3)+180*pow(u1,2)-45*u1)*sin(M_PI*v1);
 }
 
 void drawEgg(){
     glColor3d(1,1,1);
     glBegin(GL_QUADS);
-     float x1 = 0, x2 = 0, x3 = 0, x4 = 0;
-     float y1 = 0, y2 = 0, y3 = 0, y4 = 0;
-     float z1 = 0, z2 = 0, z3 = 0, z4 = 0;
-     float arg = 0.05;
+        float x1 = 0, x2 = 0, x3 = 0, x4 = 0;
+        float y1 = 0, y2 = 0, y3 = 0, y4 = 0;
+        float z1 = 0, z2 = 0, z3 = 0, z4 = 0;
+        float arg = 0.05;
 
-    for(float i = 0; i<=1-arg; i+=arg){
-       for(float j = 0; j<=1-arg; j+=arg){
-             x1 = pointX(i,j); y1 = pointY(i,j); z1 = pointZ(i,j);
-             x2 = pointX(i+arg,j); y2 = pointY(i+arg,j);  z2 = pointZ(i+arg,j);
-             x3 = pointX(i+arg,j+arg); y3 = pointY(i+arg,j+arg); z3 = pointZ(i+arg,j+arg);
-             x4 = pointX(i,j+arg); y4 = pointY(i,j+arg); z4 = pointZ(i,j+arg);
+        for(float i = 0; i<=1-arg; i+=arg){
+            for(float j = 0; j<=1-arg; j+=arg){
+                 x1 = pointX(i,j); y1 = pointY(i,j); z1 = pointZ(i,j);
+                 x2 = pointX(i+arg,j); y2 = pointY(i+arg,j);  z2 = pointZ(i+arg,j);
+                 x3 = pointX(i+arg,j+arg); y3 = pointY(i+arg,j+arg); z3 = pointZ(i+arg,j+arg);
+                 x4 = pointX(i,j+arg); y4 = pointY(i,j+arg); z4 = pointZ(i,j+arg);
 
-             glColor3d(0,0,1);
-             glVertex3f( x1 , y1 , z1);
+                 glColor3d(0,0,1);
+                 glVertex3f( x1 , y1 , z1);
 
-             glColor3d(1,0,0);
-             glVertex3f( x2 , y2 , z2);
+                 glColor3d(1,0,0);
+                 glVertex3f( x2 , y2 , z2);
 
-             glColor3d(0,1,1);
-             glVertex3f( x3 , y3 , z3);
+                 glColor3d(0,1,1);
+                 glVertex3f( x3 , y3 , z3);
 
-             glColor3d(1,1,0);
-             glVertex3f( x4 , y4 , z4);
-       }
-    }
+                 glColor3d(1,1,0);
+                 glVertex3f( x4 , y4 , z4);
+            }
+        }
     glEnd();
 }
 
@@ -463,7 +466,7 @@ static void resize(int w, int h) {
     float ratio =  ((float) w) / ((float) h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, ratio, 1, 500.0);
+    gluPerspective(45.0, ratio, 1, 1000.0);
     glMatrixMode(GL_MODELVIEW);
     glViewport(0, 0, w, h);
 }
@@ -473,32 +476,23 @@ static void display(void) {
     const double a = t*90.0;
 
     glLoadIdentity();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-/*    glColor3d(1,0,0);
-    glutWireSphere(2,16,16);*/
-
     cam.refresh();
-/*    if(bul.draw() == false){
-        bul.setPosition(cam.x()+cam.lx(),cam.y()+cam.ly(),cam.z()+cam.lz());
-    }*/
     bul.drawBulet();
 
-  //  bul.calculateColision();
-
     glPushMatrix();
-      glColor3d(1,0,0);
-      glTranslatef(cam.x()+cam.lx(),cam.y()+cam.ly(),cam.z()+cam.lz());
-      glutSolidSphere(0.006, 16, 16);
+        glColor3d(1,0,0);
+        glTranslatef(cam.x()+cam.lx(),cam.y()+cam.ly(),cam.z()+cam.lz());
+        glutSolidSphere(0.006, 16, 16);
     glPopMatrix();
 
     glColor3d(0.5,0.5,1);
     glBindTexture(GL_TEXTURE_2D, texture[8]);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     gluQuadricTexture(quad,1);
-    gluSphere(quad,100,16,16);
+    gluSphere(quad,400,30,30);
 
     glColor3f(1,1,1);
     glBindTexture(GL_TEXTURE_2D, texture[3]);
@@ -506,57 +500,23 @@ static void display(void) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glBegin(GL_QUADS);
-      glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, -100.0f, 0.0f);
-      glTexCoord2f(1.0f, 0.0f); glVertex3f(-100.0f, 100.0f, 0.0f);
-      glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 100.0f, 0.0f);
-      glTexCoord2f(0.0f, 1.0f); glVertex3f(100.0f, -100.0f, 0.0);
+        glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, -100.0f, 0.0f);
+        glTexCoord2f(1.0f, 0.0f); glVertex3f(-100.0f, 100.0f, 0.0f);
+        glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 100.0f, 0.0f);
+        glTexCoord2f(0.0f, 1.0f); glVertex3f(100.0f, -100.0f, 0.0);
     glEnd();
 
-    /*for(unsigned int i = 0; i < snowMans; ++i){
-        if(snowmans[i][3] == true){
-
-        //    float angle = 180;
-        //    glRotatef(angle, 1,0,0);
-
-          //  static float random = (rand() / RAND_MAX);
-
-            int min = 10;
-            int max = 1000;
-
-            float angle = RandomFloat(min,max);
-
-            if(angle > RandomFloat(min,max) && angle < RandomFloat(min,max)){
-              //  snowmans[i][0] += cos(angle)*0.1;
-                if(angle > RandomFloat(min,max) && angle < RandomFloat(min,max)){
-               //     snowmans[i][1] += sin(angle)*0.1;
-                }
-            }
-
-
-            //angle++;
-            glPushMatrix();
-
-           // glRotatef(angle, 0,0,1);
-                glTranslatef(snowmans[i][0], snowmans[i][1], snowmans[i][2]);
-             //   glRotatef(angle, 0,0,1);
-                drawSnowman();
-            glPopMatrix();
-        }*/
-   // }
-
- //   glPushMatrix();
-      snow.draw();
- //   glPopMatrix();
+    snow.draw();
 
     glPushMatrix();
-      glTranslatef(0,0,10);
-      drawSpace(a);
+        glTranslatef(0,0,70);
+        drawSpace(a);
     glPopMatrix();
 
     glPushMatrix();
-      glTranslatef(40,-30,0);
-      glRotatef(90,1,0,0);
-      drawEgg();
+        glTranslatef(40,-30,0);
+        glRotatef(90,1,0,0);
+        drawEgg();
     glPopMatrix();
 
     glutSwapBuffers();
@@ -588,13 +548,13 @@ static void key(unsigned char key, int x, int y) {
 }
 
 void keyRelease(unsigned char key, int x, int y){
-  switch (key){
+    switch (key){
        case 'w': cam.keyMove() = 0.0; break;
        case 's': cam.keyMove() = 0.0; break;
        case 'a': cam.keyMoveS() = 0.0; break;
        case 'd': cam.keyMoveS() = 0.0; break;
-   }
-   glutPostRedisplay();
+    }
+    glutPostRedisplay();
 }
 
 static void idle(void) {
@@ -612,11 +572,9 @@ void mouse(int button, int state, int x, int y) {
          bul.draw() = true;
      //   glEnable(GL_LIGHT0);
     }
-
     if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
 
     }
-
     if(state == GLUT_UP){
       //  glDisable(GL_LIGHT0);
     }
@@ -657,7 +615,6 @@ const GLfloat high_shininess[] = { 10.0f };
 
 int main(int argc, char *argv[]){
     srand(time(NULL));
-/*    makeSnowMans();*/
     glutInit(&argc, argv);
     glutInitWindowSize(1366,768);
     glutInitWindowPosition(10,10);
