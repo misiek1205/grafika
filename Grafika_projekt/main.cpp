@@ -491,6 +491,11 @@ static void display(void) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glBegin(GL_QUADS);
+/*    glTexCoord2f(-5.0f, -5.0f); glVertex3f(-100.0f, -100.0f, 0.0f);
+    glTexCoord2f(-5.0f, 5.0f); glVertex3f(-100.0f, 100.0f, 0.0f);
+    glTexCoord2f(5.0f, 5.0f); glVertex3f(100.0f, 100.0f, 0.0f);
+    glTexCoord2f(5.0f, -5.0f); glVertex3f(100.0f, -100.0f, 0.0);*/
+        glColor3d(1,1,1);
         glTexCoord2f(0.0f, 0.0f); glVertex3f(-100.0f, -100.0f, 0.0f);
         glTexCoord2f(1.0f, 0.0f); glVertex3f(-100.0f, 100.0f, 0.0f);
         glTexCoord2f(1.0f, 1.0f); glVertex3f(100.0f, 100.0f, 0.0f);
