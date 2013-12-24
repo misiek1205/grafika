@@ -138,6 +138,8 @@ class snowMan{
         void draw(){
             for(unsigned i = 0; i<n; i++){
                 if(snowmans[i][3] == true){
+                    snowmans[i][0] += speed*lx*direction;
+                    snowmans[i][1] += speed*ly*direction;sf
                     glPushMatrix();
                     glRotatef(snowmans[i][4], 0,0,1);
                     glTranslatef(snowmans[i][0], snowmans[i][1], snowmans[i][2]);
