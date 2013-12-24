@@ -17,7 +17,7 @@ const int minY = -90;
 const int maxY = 90;
 
 const float g_translation_speed = 0.1;
-const float g_rotation_speed = M_PI/180*0.2;
+const float g_rotation_speed = M_PI/180*0.1;
 
 float RandomFloat(float a, float b) {
     float random = ((float) rand()) / (float) RAND_MAX;
@@ -228,24 +228,22 @@ class bulet{
         void drawBulet(){
             if(draw() == true){
                 glPushMatrix();
-                glColor3d(1,1,1);
+                glColor3d(10,10,10);
                   glTranslatef(x(), y(), z());
-                  glutSolidSphere(0.1, 6, 6);
+                  glutSolidSphere(0.2, 16, 16);
                 glPopMatrix();
             }
         }
 
         void setPosition(float x, float y, float z){
-            if(draw1 == true){
               this->x() = x;
               this->y() = y;
               this->z() = z;
-            }
         }
 
         bool calculateColision(){
             for(unsigned int i = 0; i < snow.number(); ++i){
-                if(sqrt(pow(x()-snow(i,0),2)+pow(y()-snow(i,1),2)+pow(z()-snow(i,2),2)) < 1){
+                if(sqrt(pow(x()-snow(i,0),2)+pow(y()-snow(i,1),2)+pow(z()-snow(i,2)-0.5,2)) < 1){
                     snow(i,3) = false;
                     return true;
                 }
@@ -257,22 +255,15 @@ class bulet{
 bulet bul(cam.x(), cam.y(), cam.z(), false);
 
 void drawBulet1(int value){
-  //  if(bul.draw() == true){
-        float i = 0;
-        i += 1;
-        bul.x() += bul.vx()*i;
-        bul.y() += bul.vy()*i;
-        bul.z() += bul.vz()*i;
-        if(bul.calculateColision()){
-         //   bul.draw() = false;
-        //    glutPostRedisplay();
-          //  i = 0;
-        }
-/*        if(i > 2){
-            bul.draw() = false;
-            i = 0;
-        }*/
- //   }
+    float i = 0;
+    i += 1;
+    bul.x() += bul.vx()*i;
+    bul.y() += bul.vy()*i;
+    bul.z() += bul.vz()*i;
+    if(bul.calculateColision()){
+        bul.draw() = false;
+    }
+
     glutPostRedisplay();
     glutTimerFunc(10, drawBulet1, 0);
 }
@@ -570,14 +561,9 @@ void mouse(int button, int state, int x, int y) {
          bul.setPosition(cam.x()+cam.lx(),cam.y()+cam.ly(),cam.z()+cam.lz());
          bul.setVector(cam.lx(),cam.ly(),cam.lz());
          bul.draw() = true;
-     //   glEnable(GL_LIGHT0);
     }
-    if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){
-
-    }
-    if(state == GLUT_UP){
-      //  glDisable(GL_LIGHT0);
-    }
+    if(button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN){ }
+    if(state == GLUT_UP){ }
 }
 
 void processPassiveMotion(int x, int y) {
