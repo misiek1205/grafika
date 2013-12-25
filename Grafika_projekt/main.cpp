@@ -123,7 +123,7 @@ class snowMan{
         snowMan(): n(0) {
             snowmans = new int*[n];
             target = new int*[n];
-            for(unsigned i = 0; i<n; n++){
+            for(unsigned i = 0; i<n; i++){
                 snowmans[i] = new int[5];
                 target[i] = new int[2];
             }
@@ -139,8 +139,9 @@ class snowMan{
                 snowmans[i][3] = true; // true - rysuje, false - nie rysuje
                 snowmans[i][4] = RandomFloat(1,360); // kat
 
+                target[i] = new int[2];
                 target[i][0] = RandomFloat(minX, maxX);
-                target[i][1] = RandomFloat(minX, maxY);
+                target[i][1] = RandomFloat(minY, maxY);
             }
         }
         int & operator() (unsigned n, unsigned m){ return snowmans[n][m]; }
@@ -152,7 +153,7 @@ class snowMan{
         void setNewTargets(){
             for(unsigned i = 0; i<n; i++){
                 target[i][0] = RandomFloat(minX, maxX);
-                target[i][0] = RandomFloat(minX,maxY);
+                target[i][1] = RandomFloat(minY, maxY);
             }
         }
 
@@ -221,57 +222,16 @@ camera cam(0.0f, 5.0f, 1.0f, 0.0f, 1.0f, 0.0f);
 snowMan snow(50); // 50 bałwanków
 
 void moveSnowMans(int value){
-/*    static float i = 0;
-    i++;
-    if(i>=snow.number()){
-        i = 0;
-    }*/
-  //  if(i<snow.number()){
-        for(unsigned i = 0; i<snow.number(); i++){
-         //   float vx = sin(snow(i,4));
-         ///   float vy = cos(snow(i,4));
+    for(unsigned i = 0; i<snow.number(); i++){
 
-            snow(i,4) = RandomFloat(1,360);
+        float dX = snow.getTarget(i,0) - snow(i,0);
+        float dY = snow.getTarget(i,1) - snow(i,1);
 
-
-            float dX = snow.getTarget(i,0) - snow(i,0);
-            float dY = snow.getTarget(i,1) - snow(i,1);
-            float direction = atan(dY / dX);
-
-
-            float vx = cos(direction);
-            float vy = sin(direction);
-          //  float vz = -(cos(pitch)*cos(yaw));
-
-          // float direction = RandomFloat(-1,1);
-
-            snow(i,0) += vx*g_translation_speed;
-            snow(i,1) += vy*g_translation_speed;
-
-/*            if(snow(i,0) == 0){
-                snow(i,0) = 15;
-            }
-            if(snow(i,0) < 100){
-                snow(i,0)+=0.1;
-                //snow(i,1) += 0.1;
-            }*/
-/*            if(snow(i,0) > -100){
-                snow(i,0)-=0.1;
-            }*/
-
-      //      cout<<vx<<' '<<vy<<endl;
-            // else {
-/*                snow(i,0) -= 0.01;
-                snow(i,1) -= 0.01;
-            }
-            if(snow(i,0) > 2 && snow(i,1) > 2){
-                snow(i,0) -= 0.01;
-                snow(i,1) -= 0.01;
-            }*/
-        }
-  //  }
-    glutPostRedisplay();
-    glutTimerFunc(500, moveSnowMans, 0);
+        snow(i,0) += dX;
+        snow(i,1) += dY;
+    }
+    snow.setNewTargets();
+    glutTimerFunc(100, moveSnowMans, 0);
 }
 
 class bulet{
@@ -333,8 +293,6 @@ void drawBulet1(int value){
     if(bul.calculateColision()){
         bul.draw() = false;
     }
-
-    glutPostRedisplay();
     glutTimerFunc(10, drawBulet1, 0);
 }
 
@@ -584,7 +542,6 @@ static void display(void) {
         glRotatef(90,1,0,0);
         drawEgg();
     glPopMatrix();
-
     glutSwapBuffers();
 }
 
@@ -728,7 +685,7 @@ int main(int argc, char *argv[]){
 
     glutIdleFunc(idle);
     glutTimerFunc(100, drawBulet1, 0);
-    glutTimerFunc(10, moveSnowMans, 0);
+    glutTimerFunc(100, moveSnowMans, 0);
     glClearColor(0.1,0.1,0.2,0.5);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutIgnoreKeyRepeat(1);
