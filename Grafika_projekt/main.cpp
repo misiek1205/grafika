@@ -118,10 +118,19 @@ class snowMan{
     private:
       unsigned int n;
       int ** snowmans;
+      int ** target;
     public:
-        snowMan(): n(0) { snowmans = new int*[n]; for(unsigned i = 0; i<n; n++) snowmans[i] = new int[5]; }
+        snowMan(): n(0) {
+            snowmans = new int*[n];
+            target = new int*[n];
+            for(unsigned i = 0; i<n; n++){
+                snowmans[i] = new int[5];
+                target[i] = new int[2];
+            }
+        }
         snowMan(int number): n(number){
             snowmans = new int*[n];
+            target = new int*[n];
             for(unsigned i = 0; i<n; i++){
                 snowmans[i] = new int[5];
                 snowmans[i][0] = RandomFloat(minX, maxX); // pozycja X
@@ -129,20 +138,27 @@ class snowMan{
                 snowmans[i][2] = 0.0; // pozycja z
                 snowmans[i][3] = true; // true - rysuje, false - nie rysuje
                 snowmans[i][4] = RandomFloat(1,360); // kat
+
+                target[i][0] = RandomFloat(minX, maxX);
+                target[i][1] = RandomFloat(minX, maxY);
             }
         }
         int & operator() (unsigned n, unsigned m){ return snowmans[n][m]; }
         unsigned number(){ return n; }
         void set(int n, int m, int value){ snowmans[n][m] = value; }
 
+        int getTarget(int n, int m){ return target[n][m]; }
+
+        void setNewTargets(){
+            for(unsigned i = 0; i<n; i++){
+                target[i][0] = RandomFloat(minX, maxX);
+                target[i][0] = RandomFloat(minX,maxY);
+            }
+        }
+
         void draw(){
             for(unsigned i = 0; i<n; i++){
-
-                snowmans[i][0] = snowmans[i][0]+sin(snowmans[i][0]) * -sin(snowmans[i][4])*-0.000001;
-                snowmans[i][1] = snowmans[i][1]+cos(snowmans[i][1]) * cos(snowmans[i][4])*0.000001;
-
                 if(snowmans[i][3] == true){
-
                     glPushMatrix();
                        glTranslatef(snowmans[i][0], snowmans[i][1], snowmans[i][2]);
                        glRotatef(snowmans[i][4], 0,0,1);
@@ -203,6 +219,60 @@ class snowMan{
 
 camera cam(0.0f, 5.0f, 1.0f, 0.0f, 1.0f, 0.0f);
 snowMan snow(50); // 50 bałwanków
+
+void moveSnowMans(int value){
+/*    static float i = 0;
+    i++;
+    if(i>=snow.number()){
+        i = 0;
+    }*/
+  //  if(i<snow.number()){
+        for(unsigned i = 0; i<snow.number(); i++){
+         //   float vx = sin(snow(i,4));
+         ///   float vy = cos(snow(i,4));
+
+            snow(i,4) = RandomFloat(1,360);
+
+
+            float dX = snow.getTarget(i,0) - snow(i,0);
+            float dY = snow.getTarget(i,1) - snow(i,1);
+            float direction = atan(dY / dX);
+
+
+            float vx = cos(direction);
+            float vy = sin(direction);
+          //  float vz = -(cos(pitch)*cos(yaw));
+
+          // float direction = RandomFloat(-1,1);
+
+            snow(i,0) += vx*g_translation_speed;
+            snow(i,1) += vy*g_translation_speed;
+
+/*            if(snow(i,0) == 0){
+                snow(i,0) = 15;
+            }
+            if(snow(i,0) < 100){
+                snow(i,0)+=0.1;
+                //snow(i,1) += 0.1;
+            }*/
+/*            if(snow(i,0) > -100){
+                snow(i,0)-=0.1;
+            }*/
+
+      //      cout<<vx<<' '<<vy<<endl;
+            // else {
+/*                snow(i,0) -= 0.01;
+                snow(i,1) -= 0.01;
+            }
+            if(snow(i,0) > 2 && snow(i,1) > 2){
+                snow(i,0) -= 0.01;
+                snow(i,1) -= 0.01;
+            }*/
+        }
+  //  }
+    glutPostRedisplay();
+    glutTimerFunc(500, moveSnowMans, 0);
+}
 
 class bulet{
     private:
@@ -658,6 +728,7 @@ int main(int argc, char *argv[]){
 
     glutIdleFunc(idle);
     glutTimerFunc(100, drawBulet1, 0);
+    glutTimerFunc(10, moveSnowMans, 0);
     glClearColor(0.1,0.1,0.2,0.5);
     glutSetCursor(GLUT_CURSOR_NONE);
     glutIgnoreKeyRepeat(1);
