@@ -45,10 +45,10 @@ class camera{
         float strefeY;
     public:
         camera(): x1(0), y1(0), z1(0), lx1(0), ly1(0), lz1(0),
-        keyMove1(0), keyMove2(0), ghostMode1(false), yaw1(0), pitch1(0), strefeX(0), strefeY(0) {}
+        keyMove1(0), keyMove2(0), ghostMode1(false), yaw1(0), pitch1(0), strefeX(0), strefeY(0){}
 
         camera(float x, float y, float z, float lx, float ly, float lz):x1(x), y1(y), z1(z), lx1(lx), ly1(ly), lz1(lz),
-        keyMove1(0), keyMove2(0), ghostMode1(false), yaw1(0), pitch1(0), strefeX(0), strefeY(0) {}
+        keyMove1(0), keyMove2(0), ghostMode1(false), yaw1(0), pitch1(0), strefeX(0), strefeY(0){}
 
         float & x() { return x1; }
         float & y() { return y1; }
@@ -138,7 +138,7 @@ class snowMan{
                 snowmans[i][1] = RandomFloat(minY, maxY); // pozycja y
                 snowmans[i][2] = 0.0; // pozycja z
                 snowmans[i][3] = true; // true - rysuje, false - nie rysuje
-                snowmans[i][4] = RandomFloat(1,360); // kat
+                snowmans[i][4] = 1; // kat
 
                 target[i] = new float[2];
                 target[i][0] = RandomFloat(minX, maxX);
@@ -153,7 +153,7 @@ class snowMan{
 
         void setNewTargets(){
             for(unsigned i = 0; i<n; i++){
-                if(sqrt(pow(target[i][0]-snowmans[i][0],2)+pow(target[i][1]-snowmans[i][1],2)) < 150){
+                if(sqrt(pow(target[i][0]-snowmans[i][0],2)+pow(target[i][1]-snowmans[i][1],2)) < 10){
                     target[i][0] = RandomFloat(minX, maxX);
                     target[i][1] = RandomFloat(minY, maxY);
                 }
@@ -233,12 +233,14 @@ void moveSnowMans(int){
     for(unsigned i = 0; i<snow.number(); i++){
         float dX = snow.getTarget(i,0) - snow(i,0);
         float dY = snow.getTarget(i,1) - snow(i,1);
+        float angle = atan2(dY,dX)*180/M_PI;
 
-        snow(i,0) += cos(dX)*g_rotation_speed;
-        snow(i,1) +=  sin(dY)*g_translation_speed;
-        snow.setNewTargets();
+        snow(i,0) += (dX)*0.003;
+        snow(i,1) +=  (dY)*0.003;
+        snow(i,4) = angle;
+
     }
-
+    snow.setNewTargets();
     glutTimerFunc(10, moveSnowMans, 0);
 }
 
